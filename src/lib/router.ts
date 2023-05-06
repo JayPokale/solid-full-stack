@@ -6,7 +6,6 @@ export const appRouter = router({
   hello: procedure.input(z.string().nullish()).query(({ input }) => {
     return `hello ${input ?? "world"}`;
   }),
-
   user: userRouter,
 });
 
