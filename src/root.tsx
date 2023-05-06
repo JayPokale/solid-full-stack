@@ -1,5 +1,5 @@
 // @refuserh reload
-import { createSignal, Suspense } from "solid-js";
+import { createEffect, createSignal, Suspense } from "solid-js";
 import {
   Body,
   ErrorBoundary,
@@ -13,6 +13,7 @@ import {
 } from "solid-start";
 import Nav from "./components/Nav";
 import "./root.css";
+import { client } from "./lib/trpc";
 
 interface user {
   name: string | null;
@@ -27,15 +28,39 @@ const emptyUser = {
 export const [User, setUser] = createSignal<user>(emptyUser);
 
 export function getCookie(key: string) {
-  var arrayb = document.cookie.split(";");
-  for (const item of arrayb) {
+  var array = document.cookie.split(";");
+  for (const item of array) {
     if (item.startsWith(`${key}=`)) {
-      return item.substring(6);
+      return item.substring(key.length + 1);
     }
   }
 }
 
 export default function Root() {
+  createEffect(async () => {
+    const userString: any = localStorage.getItem("user");
+    let user: user = emptyUser;
+    if (userString !== "undefined") {
+      user = await JSON.parse(userString);
+      setUser(user);
+    }
+    const token = getCookie("token");
+    if (!user.userId && token?.length) {
+      const result: any = client.user.thisUser.query(token);
+      console.log(result);
+      if (result.success) {
+        const user = {
+          name: result.name,
+          username: result.username,
+          userId: result.userId,
+        };
+        setUser(user);
+        localStorage.setItem("user", JSON.stringify(user));
+        document.cookie = `token=${result.token}`;
+      }
+    }
+  });
+
   return (
     <Html lang="en">
       <Head>

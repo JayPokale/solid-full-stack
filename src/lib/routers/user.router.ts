@@ -95,6 +95,32 @@ const userRouter = router({
       }
     }),
 
+  thisUser: procedure.input(z.string()).query(async ({ input }) => {
+    const { _id, jwtKey } = jwt.verify(
+      input,
+      import.meta.env.VITE_JWT_SECRET
+    ) as { _id: string; jwtKey: string };
+
+    try {
+      const user = await userModel.findById(_id);
+      if (user?.jwtKey !== jwtKey)
+        return {
+          msg: "Loged out",
+          error: false,
+        };
+      return {
+        name: user.name,
+        username: user.username,
+        userId: user.userId,
+        token: input,
+        success: true,
+        error: false,
+      };
+    } catch (error) {
+      return { error };
+    }
+  }),
+
   sendMailForAuth: procedure
     .input(z.string().email())
     .query(async ({ input }) => {
