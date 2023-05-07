@@ -14,27 +14,8 @@ import {
 import Nav from "./components/Nav";
 import "./root.css";
 import { client } from "./lib/trpc";
-
-interface user {
-  name: string | null;
-  username: string | null;
-  userId: string | null;
-}
-const emptyUser = {
-  name: null,
-  username: null,
-  userId: null,
-};
-export const [User, setUser] = createSignal<user>(emptyUser);
-
-export function getCookie(key: string) {
-  var array = document.cookie.split(";");
-  for (const item of array) {
-    if (item.startsWith(`${key}=`)) {
-      return item.substring(key.length + 1);
-    }
-  }
-}
+import getCookie from "./utils/getToken";
+import { emptyUser, setUser, user } from "./utils/user";
 
 export default function Root() {
   createEffect(async () => {

@@ -103,11 +103,12 @@ const userRouter = router({
 
     try {
       const user = await userModel.findById(_id);
-      if (user?.jwtKey !== jwtKey)
+      if (user?.jwtKey !== jwtKey) {
         return {
-          msg: "Loged out",
+          msg: "Logged out",
           error: false,
         };
+      }
       return {
         name: user.name,
         username: user.username,
@@ -149,6 +150,50 @@ const userRouter = router({
       };
       try {
         await sgMail.send(msg);
+        return { success: true, error: false };
+      } catch (error) {
+        console.log(error);
+        return { error };
+      }
+    }),
+
+  updateUser: procedure
+    .input(
+      z.object({
+        token: z.string(),
+        query: z.object({
+          name: z.string(),
+          username: z.string(),
+          bio: z.string().optional(),
+          location: z.string().optional(),
+          profilePhoto: z.string().optional(),
+          about: z.string().optional(),
+          socialLinks: z.array(
+            z.object({
+              platform: z.string().optional(),
+              link: z.string().optional(),
+            })
+          ),
+        }),
+      })
+    )
+    .query(async ({ input }) => {
+      const { _id, jwtKey } = jwt.verify(
+        input.token,
+        import.meta.env.VITE_JWT_SECRET
+      ) as { _id: string; jwtKey: string };
+      try {
+        const user = await userModel.findById(_id);
+        if (user?.jwtKey !== jwtKey) {
+          return {
+            msg: "Not a valid user",
+            error: false,
+          };
+        }
+        await userModel.updateOne(
+          { _id },
+          { $set: input.query }
+        );
         return { success: true, error: false };
       } catch (error) {
         console.log(error);

@@ -1,7 +1,7 @@
 import { createEffect } from "solid-js";
 import { isServer } from "solid-js/web";
 import { Navigate, unstable_clientOnly } from "solid-start";
-import { User } from "~/root";
+import { User } from "~/utils/user";
 
 const EditPost = unstable_clientOnly(
   () => import("~/components/PostComponents/EditPost")

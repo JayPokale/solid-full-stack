@@ -1,8 +1,8 @@
 import { Navigate, createRouteAction, useSearchParams } from "solid-start";
 import { Form } from "solid-start/data/Form";
+import { Input } from "~/components/Input/Input";
 import { client } from "~/lib/trpc";
-import { Input } from "./index";
-import { setUser } from "~/root";
+import { setUser } from "~/utils/user";
 
 const auth = () => {
   const [params] = useSearchParams();
@@ -39,15 +39,15 @@ const auth = () => {
         >
           <div class="w-full items-center flex flex-col gap-4">
             <h1 class="text-lg">Create Credentials</h1>
-            <Input {...{ type: "text", label: "Name" }} />
-            <Input {...{ type: "text", label: "Username" }} />
-            <Input {...{ type: "password", label: "Password" }} />
+            <Input {...{ type: "text", label: "Name", name: "Name" }} />
+            <Input {...{ type: "text", label: "Username", name: "Username" }} />
+            <Input {...{ type: "password", label: "Password", name: "Password" }} />
           </div>
           <div class="w-full flex flex-col gap-4 justify-end">
             <input
               type="submit"
               value="Submit"
-              class="w-full my-2 py-1 rounded-md text-green-600 bg-green-50 cursor-pointer"
+              class="w-full my-2 py-1 rounded-md text-green-600 bg-green-100 cursor-pointer"
             />
           </div>
         </Form>

@@ -9,8 +9,9 @@ import Image from "@editorjs/image";
 import Delimiter from "@editorjs/delimiter";
 import InlineCode from "@editorjs/inline-code";
 import "./Editor.css";
-import { getCookie, User } from "~/root";
 import { Navigate, useParams } from "solid-start";
+import { User } from "~/utils/user";
+import getCookie from "~/utils/getToken";
 
 const WritePost = () => {
   const [title, setTitle] = createSignal("");

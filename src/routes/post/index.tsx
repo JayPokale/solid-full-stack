@@ -1,3 +1,5 @@
+// Page to be deleted
+
 import { useSearchParams } from "solid-start";
 import ArticleAside from "~/components/Article/ArticleAside";
 import ArticleMain from "~/components/Article/ArticleMain";

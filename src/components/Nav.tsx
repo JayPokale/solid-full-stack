@@ -1,5 +1,5 @@
 import { A } from "solid-start";
-import { User } from "~/root";
+import { User } from "~/utils/user";
 
 const Nav = () => {
   return (

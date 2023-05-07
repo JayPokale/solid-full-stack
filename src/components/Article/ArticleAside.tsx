@@ -20,7 +20,7 @@ const ArticleAside = (result: any) => {
         </div>
       </div>
       <div class="py-4">
-        <button class="w-full py-1 rounded-md text-green-600 bg-green-50">
+        <button class="w-full py-1 rounded-md text-green-600 bg-green-100">
           Follow
         </button>
       </div>

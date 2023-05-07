@@ -1,6 +1,5 @@
 import { createEffect, For, JSX } from "solid-js";
 import { A, createRouteData, useParams, useRouteData } from "solid-start";
-import { getCookie, User } from "~/root";
 
 export function routeData() {
   return createRouteData(async () => {
@@ -59,7 +58,7 @@ export function routeData() {
                   <img
                     src={user.profilePhoto || "/userNone.webp"}
                     alt="name here"
-                    class="w-24 h-24 rounded-xl"
+                    class="w-24 h-24 rounded-xl object-cover"
                   />
                   <div class="flex flex-col justify-evenly font-medium">
                     <p class="max-w-[176px]">{user.name}</p>
@@ -78,7 +77,7 @@ export function routeData() {
                   </div>
                 </div>
                 {/* <div class="py-4">
-                  <button class="w-full py-1 rounded-md text-green-600 bg-green-50">
+                  <button class="w-full py-1 rounded-md text-green-600 bg-green-100">
                     Follow
                   </button>
                 </div> */}
@@ -207,7 +206,7 @@ export function routeData() {
 }
 
 const profile = () => {
-  const user = useRouteData<typeof routeData>();
+  const user = useRouteData<typeof routeData>() as any;
   let data = { ...user() }.t;
   createEffect(() => {
     const params = useParams();

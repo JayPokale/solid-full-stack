@@ -9,38 +9,15 @@ import CheckList from "@editorjs/checklist";
 import Delimiter from "@editorjs/delimiter";
 import InlineCode from "@editorjs/inline-code";
 import "./Editor.css";
-import { getCookie, User } from "~/root";
 import { Navigate } from "solid-start";
+import uploadImage from "~/utils/uploadImage";
+import getCookie from "~/utils/getToken";
 
 const EditPost = () => {
   const [title, setTitle] = createSignal("");
   const [subtitle, setSubtitle] = createSignal("");
   const [thumbnail, setThumbnail] = createSignal("");
   const [nevigate, setNevigate] = createSignal("");
-
-  const uploadImage = async (image: File) => {
-    if (!User().userId) return;
-    const formData = new FormData();
-    formData.append("file", image);
-    formData.append("upload_preset", import.meta.env.VITE_UPLOAD_PRESET);
-    formData.append("cloud_name", import.meta.env.VITE_CLOUDNAME);
-
-    try {
-      const res = await fetch(
-        `https://api.cloudinary.com/v1_1/${
-          import.meta.env.VITE_CLOUDNAME
-        }/image/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-      const data = await res.json();
-      return data.secure_url;
-    } catch {
-      return "An error occured";
-    }
-  };
 
   const EDITOR_JS_TOOLS = {
     header: Header,

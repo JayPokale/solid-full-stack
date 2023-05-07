@@ -1,8 +1,8 @@
 import { createEffect } from "solid-js";
 import { A, createRouteData, useParams, useRouteData } from "solid-start";
 import { format } from "timeago.js";
-import { User } from "~/root";
 import "../../components/PostComponents/Editor.css";
+import { User } from "~/utils/user";
 
 const convertDataToHtml = (blocks: [Object]) => {
   var convertedHtml = "";
@@ -163,7 +163,7 @@ export function routeData() {
                 </div>
               </div>
               {/* <div class="py-4">
-                <button class="w-full py-1 rounded-md text-green-600 bg-green-50">
+                <button class="w-full py-1 rounded-md text-green-600 bg-green-100">
                   Follow
                 </button>
               </div> */}
@@ -184,7 +184,7 @@ const article = () => {
   const params = useParams();
   const postId = params.readPostId;
 
-  const post = useRouteData<typeof routeData>();
+  const post: any = useRouteData<typeof routeData>();
   let data: any = { ...{ ...post() }.html }.t;
   if (data)
     data = data.replace(
