@@ -9,10 +9,6 @@ import bcrypt from "bcryptjs";
 sgMail.setApiKey(import.meta.env.VITE_SEND_GRID_KEY);
 
 const userRouter = router({
-  hello: procedure.input(z.string().nullish()).query(({ input }) => {
-    return `Hi ${input ?? "world"}`;
-  }),
-
   createUser: procedure
     .input(
       z.object({
@@ -71,8 +67,11 @@ const userRouter = router({
     )
     .query(async ({ input }) => {
       const { username, password } = input;
-      const user = await userModel.findOne({ username });
       try {
+        const user = await userModel.findOne(
+          { username },
+          { password: 1, name: 1, username: 1, userId: 1, jwtKey: 1 }
+        );
         if (user && bcrypt.compareSync(password, user.password)) {
           return {
             name: user.name,
@@ -102,7 +101,13 @@ const userRouter = router({
     ) as { _id: string; jwtKey: string };
 
     try {
-      const user = await userModel.findById(_id);
+      const user = await userModel.findById(_id, {
+        name: 1,
+        username: 1,
+        userId: 1,
+        jwtKey: 1,
+        _id: 0,
+      });
       if (user?.jwtKey !== jwtKey) {
         return {
           msg: "Logged out",
@@ -183,23 +188,77 @@ const userRouter = router({
         import.meta.env.VITE_JWT_SECRET
       ) as { _id: string; jwtKey: string };
       try {
-        const user = await userModel.findById(_id);
+        const user = await userModel.findById(_id, { _id: 0, jwtKey: 1 });
         if (user?.jwtKey !== jwtKey) {
           return {
             msg: "Not a valid user",
             error: false,
           };
         }
-        await userModel.updateOne(
-          { _id },
-          { $set: input.query }
-        );
+        if (await userModel.exists({ username: input.query.username })) {
+          return { msg: "Username Exist", error: true };
+        }
+        await userModel.findByIdAndUpdate(_id, { $set: input.query });
         return { success: true, error: false };
       } catch (error) {
         console.log(error);
         return { error };
       }
     }),
+
+  fetchUser: procedure
+    .input(z.object({ token: z.string().optional(), idToFetch: z.string() }))
+    .query(async ({ input }) => {
+      const { _id, jwtKey } = !input.token
+        ? { _id: null, jwtKey: null }
+        : (jwt.verify(input.token, import.meta.env.VITE_JWT_SECRET) as {
+            _id: string;
+            jwtKey: string;
+          });
+      try {
+        const user = await userModel.findById(_id, {
+          userId: 1,
+          jwtKey: 1,
+          _id: 0,
+        });
+
+        if (user.userId === input.idToFetch && user.jwtKey === jwtKey) {
+          return await userModel
+            .findById(_id)
+            .select("-password -__v -createdAt -updatedAt");
+        } else {
+          return await userModel
+            .findOne({ userId: input.idToFetch })
+            .select(
+              "-password -__v -createdAt -updatedAt -drafts -liked -viewed -saved -commented -followed"
+            );
+        }
+      } catch (error) {
+        return { error };
+      }
+    }),
+
+  logoutAll: procedure.input(z.string()).query(async ({ input }) => {
+    const { _id, jwtKey } = jwt.verify(
+      input,
+      import.meta.env.VITE_JWT_SECRET
+    ) as { _id: string; jwtKey: string };
+    try {
+      const user = await userModel.findById(_id, { _id: 1, jwtKey: 1 });
+      if (user?.jwtKey === jwtKey) {
+        await userModel.findByIdAndUpdate(_id, {
+          $set: { jwtKey: randomBytes(3).toString("base64") },
+        });
+      } else {
+        return {
+          msg: "Not a valid user",
+          error: false,
+        };
+      }
+    } catch (error) {
+      return { error };
+    }
+  }),
 });
 
 export default userRouter;

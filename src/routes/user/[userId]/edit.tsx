@@ -32,7 +32,7 @@ const edit = () => {
           bio: formData.Bio?.value,
           location: formData.Location?.value,
           profilePhoto: profile(),
-          about: about(),
+          about: about() !== "" ? about() : undefined,
           socialLinks: [] as { platform: string; link: string }[],
         };
         platforms.forEach((platform) => {
@@ -55,7 +55,7 @@ const edit = () => {
   );
 
   return (
-    <div class="max-w-screen-lg w-full mx-auto flex justify-center px-2">
+    <div class="max-w-screen-lg w-full mx-auto flex justify-center p-2">
       <Form
         class="w-full flex flex-col gap-4"
         onsubmit={(e: any) => updateUserData(e.target.elements)}
@@ -89,7 +89,9 @@ const edit = () => {
           <div class="w-full max-w-lg p-4 flex flex-col gap-4">
             <Input {...{ type: "text", label: "Name", name: "Name" }} />
             <Input {...{ type: "text", label: "Username", name: "Username" }} />
-            <InputNonReq {...{ type: "text", label: "Short Bio", name: "Bio" }} />
+            <InputNonReq
+              {...{ type: "text", label: "Short Bio", name: "Bio" }}
+            />
             <InputNonReq
               {...{
                 type: "text",
