@@ -12,6 +12,7 @@ import "./Editor.css";
 import { Navigate, useParams } from "solid-start";
 import { User } from "~/utils/user";
 import getCookie from "~/utils/getToken";
+import { client } from "~/lib/trpc";
 
 const WritePost = () => {
   const [title, setTitle] = createSignal("");
@@ -25,17 +26,9 @@ const WritePost = () => {
   let result: any;
 
   const fetchEditPost = async () => {
-    const response = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/posts/fetchforedit/${postId}`,
-      {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        method: "GET",
-      }
-    );
-    result = await response.json();
+    const token = getCookie("token");
+    if (!token) return alert("Login Required");
+    result = await client.post.fetchPostForEdit.query({ token, postId });
     setTitle(result.title);
     setSubtitle(result.subtitle);
     setThumbnail(result.thumbnail);
@@ -52,7 +45,9 @@ const WritePost = () => {
 
   try {
     fetchEditPost();
-  } catch {}
+  } catch (error) {
+    console.log({ error });
+  }
 
   const uploadImage = async (image: File) => {
     if (!User().userId) return;
@@ -109,22 +104,16 @@ const WritePost = () => {
   });
 
   const handleDelete = async () => {
-    const formController = document.getElementById("formController");
+    const formController: any = document.getElementById("formController");
     formController.classList.add("hidden");
-    const response = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/posts/${postId}`,
-      {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          token: getCookie("token"),
-        },
-        method: "DELETE",
-      }
-    );
-    const result = await response.json();
+    const token = getCookie("token");
+    if (!token) return alert("Login Required");
+    const res = await client.post.deletePost.query({
+      token,
+      _id: result?.post?._id,
+    });
     formController.classList.remove("hidden");
-    if (!result.error) {
+    if (!res.error) {
       setTitle("");
       setSubtitle("");
       setThumbnail("");
@@ -137,37 +126,7 @@ const WritePost = () => {
       sessionStorage.removeItem(postId);
       setNevigate("/");
     }
-    return alert(result.error ? "An error occured" : "Post Deleted");
-  };
-
-  const handleDraft = async () => {
-    if (!title()) return alert("Title is required");
-    if (!subtitle()) return alert("Subtitle is required");
-    const formController = document.getElementById("formController");
-    formController.classList.add("hidden");
-    const data = await editor.save();
-    const response = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/posts/${postId}`,
-      {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          token: getCookie("token"),
-        },
-        method: "PATCH",
-        body: JSON.stringify({
-          title: title(),
-          subtitle: subtitle(),
-          thumbnail: thumbnail(),
-          content: data.blocks,
-          active: false,
-        }),
-      }
-    );
-    const result = await response.json();
-    formController.classList.remove("hidden");
-    if (!result.error) sessionStorage.removeItem(postId);
-    return alert(result.error ? "An error occured" : "Post Saved as Draft");
+    return alert(res.error ? "An error occured" : "Post Deleted");
   };
 
   const handleUpdate = async () => {
@@ -205,19 +164,13 @@ const WritePost = () => {
       <div id="formController" class="w-full flex justify-end gap-2">
         {nevigate() !== "" && <Navigate href={nevigate()} />}
         <button
-          class="py-1 px-4 rounded-md text-green-500 bg-green-100"
+          class="py-1 px-4 rounded-md text-gray-500 bg-gray-100"
           onclick={handleUpdate}
         >
           Update
         </button>
         <button
-          class="py-1 px-4 rounded-md text-blue-500 bg-blue-100"
-          onclick={handleDraft}
-        >
-          Draft
-        </button>
-        <button
-          class="py-1 px-4 rounded-md text-red-500 bg-red-100"
+          class="py-1 px-4 rounded-md text-gray-500 bg-gray-100"
           onclick={handleDelete}
         >
           Delete

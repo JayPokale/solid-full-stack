@@ -9,6 +9,7 @@
   "devDependencies": {
     "@mdx-js/rollup": "^2.2.1",
     "@types/bcryptjs": "^2.4.2",
+    "@types/editorjs__header": "^2.6.0",
     "@types/jsonwebtoken": "^9.0.2",
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.21",
@@ -39,6 +40,7 @@
     "dotenv": "^16.0.3",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.1.0",
+    "remove": "^0.1.5",
     "solid-js": "^1.6.11",
     "solid-mdx": "^0.0.6",
     "solid-start": "^0.2.21",

@@ -12,6 +12,7 @@ import "./Editor.css";
 import { Navigate } from "solid-start";
 import uploadImage from "~/utils/uploadImage";
 import getCookie from "~/utils/getToken";
+import { client } from "~/lib/trpc";
 
 const EditPost = () => {
   const [title, setTitle] = createSignal("");
@@ -22,7 +23,6 @@ const EditPost = () => {
   const EDITOR_JS_TOOLS = {
     header: Header,
     list: List,
-    // codeBox: CodeBox,
     image: {
       class: Image,
       config: {
@@ -38,6 +38,7 @@ const EditPost = () => {
         },
       },
     },
+    // codeBox: CodeBox,
     // quote: Quote,
     // checklist: CheckList,
     delimiter: Delimiter,
@@ -61,66 +62,59 @@ const EditPost = () => {
     editor.clear();
   };
 
-  const handleCancel = () => {
+  const handleSubmit = async () => {
+    if (!title()) return alert("Title is required");
+    if (!subtitle()) return alert("Subtitle is required");
+    const formController: any = document.getElementById("formController");
+    formController.classList.add("hidden");
+    const data = await editor.save();
+    const token = getCookie("token");
+    if (!token) {
+      return alert("Login Required");
+    }
+    const result: any = await client.post.createPost.query({
+      token,
+      payload: {
+        title: title(),
+        subtitle: subtitle(),
+        thumbnail: thumbnail(),
+        content: data.blocks,
+      },
+    });
+    formController.classList.remove("hidden");
+    console.log(result);
+    if (!result.success) {
+      return;
+    }
     handleClear();
-    setNevigate("/");
+    setNevigate(`/post/${result.postId}`);
   };
 
   const handleDraft = async () => {
     if (!title()) return alert("Title is required");
     if (!subtitle()) return alert("Subtitle is required");
-    const formController = document.getElementById("formController");
+    const formController: any = document.getElementById("formController");
     formController.classList.add("hidden");
     const data = await editor.save();
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/posts`, {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        token: getCookie("token"),
-      },
-      method: "POST",
-      body: JSON.stringify({
+    const token = getCookie("token");
+    if (!token) return alert("Login Required");
+    const result: any = await client.post.createPost.query({
+      token,
+      payload: {
         title: title(),
         subtitle: subtitle(),
         thumbnail: thumbnail(),
         content: data.blocks,
-        active: false,
-      }),
+        draft: true,
+      },
     });
-    const result = await response.json();
-    if (result.postId) handleClear();
     formController.classList.remove("hidden");
+    console.log(result);
+    if (!result.success) {
+      return;
+    }
+    handleClear();
     setNevigate(`/post/edit/${result.postId}`);
-    if (result.postId) return alert("Post Saved as Draft");
-    else return alert("An error occured");
-  };
-
-  const handleSubmit = async () => {
-    if (!title()) return alert("Title is required");
-    if (!subtitle()) return alert("Subtitle is required");
-    const formController = document.getElementById("formController");
-    formController.classList.add("hidden");
-    const data = await editor.save();
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/posts`, {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        token: getCookie("token"),
-      },
-      method: "POST",
-      body: JSON.stringify({
-        title: title(),
-        subtitle: subtitle(),
-        thumbnail: thumbnail(),
-        content: data.blocks,
-      }),
-    });
-    const result = await response.json();
-    if (result.postId) handleClear();
-    formController.classList.remove("hidden");
-    setNevigate(`/post/${result.postId}`);
-    if(!result.error) return alert("Post Published");
-    else return alert("An error occured");
   };
 
   return (
@@ -128,22 +122,16 @@ const EditPost = () => {
       <div id="formController" class="w-full flex justify-end gap-2">
         {nevigate() !== "" && <Navigate href={nevigate()} />}
         <button
-          class="py-1 px-4 rounded-md text-green-500 bg-green-100"
+          class="py-1 px-4 rounded-md text-gray-500 bg-gray-100"
           onclick={handleSubmit}
         >
           Publish
         </button>
         <button
-          class="py-1 px-4 rounded-md text-blue-500 bg-blue-100"
+          class="py-1 px-4 rounded-md text-gray-500 bg-gray-100"
           onclick={handleDraft}
         >
           Draft
-        </button>
-        <button
-          class="py-1 px-4 rounded-md text-red-500 bg-red-100"
-          onclick={handleCancel}
-        >
-          Cancel
         </button>
       </div>
       <div class="w-full" style={{ "font-family": "Raleway, sans-serif" }}>
@@ -211,18 +199,13 @@ const EditPost = () => {
         id="thumbnail"
         class="hidden"
         accept=".jpg, .jpeg, .png"
-        onchange={async (e) => {
-          if ((e.target as HTMLInputElement).files?.[0]) {
-            const res = await uploadImage(
-              (e.target as HTMLInputElement).files[0]
-            );
+        onchange={async (e: any) => {
+          if (e.target.files?.[0]) {
+            const res = await uploadImage(e.target.files[0]);
             setThumbnail(res);
-            document
+            (document as any)
               .getElementById("thumbnailImage")
-              .setAttribute(
-                "src",
-                URL.createObjectURL((e.target as HTMLInputElement).files[0])
-              );
+              .setAttribute("src", URL.createObjectURL(e.target.files[0]));
           }
         }}
       />

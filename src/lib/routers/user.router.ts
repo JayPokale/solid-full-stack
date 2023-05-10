@@ -22,7 +22,7 @@ const userRouter = router({
       let { name, username, password, email } = input;
       try {
         if (await userModel.exists({ username })) {
-          return { msg: "Username Exist", error: true };
+          return { msg: "Username Exist", error: false };
         }
       } catch (error) {
         console.log(error);
@@ -132,7 +132,7 @@ const userRouter = router({
     .query(async ({ input }) => {
       try {
         if (await userModel.exists({ email: input })) {
-          return { msg: "Email Exist", error: true };
+          return { msg: "Email Exist", error: false };
         }
       } catch (error) {
         console.log(error);
@@ -196,7 +196,7 @@ const userRouter = router({
           };
         }
         if (await userModel.exists({ username: input.query.username })) {
-          return { msg: "Username Exist", error: true };
+          return { msg: "Username Exist", error: false };
         }
         await userModel.findByIdAndUpdate(_id, { $set: input.query });
         return { success: true, error: false };

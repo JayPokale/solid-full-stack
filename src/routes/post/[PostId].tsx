@@ -3,6 +3,7 @@ import { A, createRouteData, useParams, useRouteData } from "solid-start";
 import { format } from "timeago.js";
 import "../../components/PostComponents/Editor.css";
 import { User } from "~/utils/user";
+import { client } from "~/lib/trpc";
 
 const convertDataToHtml = (blocks: [Object]) => {
   var convertedHtml = "";
@@ -38,27 +39,13 @@ const convertDataToHtml = (blocks: [Object]) => {
 export function routeData() {
   return createRouteData(async () => {
     const params = useParams();
-    const postId = params.readPostId;
-    let result: any;
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/posts/customfetch/${postId}`,
-        {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          method: "GET",
-        }
-      );
-      result = await response.json();
-    } catch {
-      result = { error: "An error occured" };
-    }
+    const postId = params.PostId;
+    const result: any = await client.post.fetchPost.query(postId);
     let html = null;
     let editorJsContent = null;
     let userId = null;
-    if (result.error) {
+
+    if (!result.success) {
       html = (
         <div class="max-w-screen-2xl mx-auto flex justify-center">
           <div class="p-12 text-2xl text-gray-400 font-semibold italic grid place-items-center gap-4">
@@ -83,13 +70,13 @@ export function routeData() {
       userId = user.userId;
       html = (
         <div class="max-w-screen-2xl mx-auto flex justify-center">
-          <div class="border-r">
-            <main class="max-w-2xl w-full px-4">
+          <div class="border-r w-full max-w-2xl">
+            <main class="w-full px-4">
               <div class="w-full py-4 border-b flex justify-between">
                 <div class="flex gap-3">
                   <a href={`/user/${user.userId}`} link={true}>
                     <img
-                      src={post.profilePhoto || "/userNone.webp"}
+                      src={user.profilePhoto || "/userNone.webp"}
                       alt={user.name}
                       class="w-12 h-12 rounded-full"
                     />
@@ -124,11 +111,13 @@ export function routeData() {
                 >
                   {post.subtitle}
                 </h2>
-                <img
-                  src={post.thumbnail}
-                  alt="Article thumbnail"
-                  class="py-4"
-                />
+                {post.thumbnail ?? (
+                  <img
+                    src={post.thumbnail}
+                    alt="Article thumbnail"
+                    class="py-4"
+                  />
+                )}
                 <div
                   class="text-justify space-y-4 py-4 text-lg"
                   style={{ "font-family": "Inter" }}
@@ -142,7 +131,7 @@ export function routeData() {
             <div class="w-full p-4 border-b flex flex-col gap-2">
               <div class="flex flex-wrap gap-4">
                 <img
-                  src={post.profilePhoto || "/userNone.webp"}
+                  src={user.profilePhoto || "/userNone.webp"}
                   alt="name here"
                   class="w-24 h-24 rounded-xl"
                 />
