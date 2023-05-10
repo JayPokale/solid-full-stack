@@ -41,6 +41,7 @@ export default function Root() {
       }
     }
   });
+  console.log(import.meta.env.VITE_MAIN_URI)
 
   return (
     <Html lang="en">
