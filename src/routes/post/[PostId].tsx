@@ -70,7 +70,7 @@ export function routeData() {
       userId = user.userId;
       html = (
         <div class="max-w-screen-2xl mx-auto flex justify-center">
-          <div class="border-r w-full max-w-2xl">
+          <div class="lg:border-r w-full max-w-2xl">
             <main class="w-full px-4">
               <div class="w-full py-4 border-b flex justify-between">
                 <div class="flex gap-3">
@@ -171,7 +171,7 @@ export function routeData() {
 
 const article = () => {
   const params = useParams();
-  const postId = params.readPostId;
+  const postId = params.PostId;
 
   const post: any = useRouteData<typeof routeData>();
   let data: any = { ...{ ...post() }.html }.t;

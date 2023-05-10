@@ -29,10 +29,10 @@ const WritePost = () => {
     const token = getCookie("token");
     if (!token) return alert("Login Required");
     result = await client.post.fetchPostForEdit.query({ token, postId });
-    setTitle(result.title);
-    setSubtitle(result.subtitle);
-    setThumbnail(result.thumbnail);
-    setContent(result.content);
+    setTitle(result.post.title);
+    setSubtitle(result.post.subtitle);
+    setThumbnail(result.post.thumbnail);
+    setContent(result.post.content);
     setLoded(true);
 
     editor.isReady.then(() => {
@@ -129,34 +129,55 @@ const WritePost = () => {
     return alert(res.error ? "An error occured" : "Post Deleted");
   };
 
-  const handleUpdate = async () => {
+  const handlePublish = async () => {
     if (!title()) return alert("Title is required");
     if (!subtitle()) return alert("Subtitle is required");
-    const formController = document.getElementById("formController");
+    const formController: any = document.getElementById("formController");
     formController.classList.add("hidden");
     const data = await editor.save();
-    const response = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/posts/${postId}`,
-      {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          token: getCookie("token"),
-        },
-        method: "PATCH",
-        body: JSON.stringify({
-          title: title(),
-          subtitle: subtitle(),
-          thumbnail: thumbnail(),
-          content: data.blocks,
-        }),
-      }
-    );
-    const result = await response.json();
+    const token = getCookie("token");
+    if (!token) return alert("Login Required");
+    const res: any = await client.post.updatePost.query({
+      token,
+      _id: result?.post?._id,
+      user_id: result?.post?.user_id,
+      payload: {
+        draft: false,
+        title: title(),
+        subtitle: subtitle(),
+        thumbnail: thumbnail(),
+        content: data.blocks,
+      },
+    });
     formController.classList.remove("hidden");
-    if (!result.error) sessionStorage.removeItem(postId);
+    if (!res.success) return;
+    sessionStorage.removeItem(postId);
     setNevigate(`/post/${postId}`);
-    return alert(result.error ? "An error occured" : "Post Updated");
+  };
+
+  const handleDraft = async () => {
+    if (!title()) return alert("Title is required");
+    if (!subtitle()) return alert("Subtitle is required");
+    const formController: any = document.getElementById("formController");
+    formController.classList.add("hidden");
+    const token = getCookie("token");
+    if (!token) return alert("Login Required");
+    const data = await editor.save();
+    const res: any = await client.post.updatePost.query({
+      token,
+      _id: result?.post?._id,
+      user_id: result?.post?.user_id,
+      payload: {
+        draft: true,
+        title: title(),
+        subtitle: subtitle(),
+        thumbnail: thumbnail(),
+        content: data.blocks,
+      },
+    });
+    formController.classList.remove("hidden");
+    if (res.success) sessionStorage.removeItem(postId);
+    setNevigate(`/post/edit/${postId}`);
   };
 
   return (
@@ -165,9 +186,15 @@ const WritePost = () => {
         {nevigate() !== "" && <Navigate href={nevigate()} />}
         <button
           class="py-1 px-4 rounded-md text-gray-500 bg-gray-100"
-          onclick={handleUpdate}
+          onclick={handlePublish}
         >
-          Update
+          Publish
+        </button>
+        <button
+          class="py-1 px-4 rounded-md text-gray-500 bg-gray-100"
+          onclick={handleDraft}
+        >
+          Draft
         </button>
         <button
           class="py-1 px-4 rounded-md text-gray-500 bg-gray-100"
@@ -185,7 +212,7 @@ const WritePost = () => {
           data-ph="Title"
           onInput={(e) => setTitle((e.target as HTMLElement).innerText)}
         >
-          {loded() && result.title}
+          {loded() && result.post.title}
         </div>
         <div
           contentEditable={true}
@@ -193,7 +220,7 @@ const WritePost = () => {
           data-ph="Subtitle"
           onInput={(e) => setSubtitle((e.target as HTMLElement).innerText)}
         >
-          {loded() && result.subtitle}
+          {loded() && result.post.subtitle}
         </div>
       </div>
       {thumbnail() && (
@@ -249,11 +276,9 @@ const WritePost = () => {
         id="thumbnail"
         class="hidden"
         accept=".jpg, .jpeg, .png"
-        onchange={async (e) => {
-          if ((e.target as HTMLInputElement).files?.[0]) {
-            const res = await uploadImage(
-              (e.target as HTMLInputElement).files[0]
-            );
+        onchange={async (e: any) => {
+          if (e.target.files?.[0]) {
+            const res = await uploadImage(e.target.files[0]);
             setThumbnail(res);
           }
         }}

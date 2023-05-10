@@ -190,10 +190,7 @@ const userRouter = router({
       try {
         const user = await userModel.findById(_id, { _id: 0, jwtKey: 1 });
         if (user?.jwtKey !== jwtKey) {
-          return {
-            msg: "Not a valid user",
-            error: false,
-          };
+          return { msg: "Not a valid user", error: false };
         }
         if (await userModel.exists({ username: input.query.username })) {
           return { msg: "Username Exist", error: false };

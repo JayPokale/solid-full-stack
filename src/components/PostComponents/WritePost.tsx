@@ -69,9 +69,7 @@ const EditPost = () => {
     formController.classList.add("hidden");
     const data = await editor.save();
     const token = getCookie("token");
-    if (!token) {
-      return alert("Login Required");
-    }
+    if (!token) return alert("Login Required");
     const result: any = await client.post.createPost.query({
       token,
       payload: {
@@ -82,10 +80,7 @@ const EditPost = () => {
       },
     });
     formController.classList.remove("hidden");
-    console.log(result);
-    if (!result.success) {
-      return;
-    }
+    if (!result.success) return;
     handleClear();
     setNevigate(`/post/${result.postId}`);
   };

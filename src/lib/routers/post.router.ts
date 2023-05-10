@@ -17,10 +17,6 @@ const postRouter = router({
           thumbnail: z.string().optional(),
           content: z.array(z.any()).optional(),
           catagories: z.array(z.string()).optional(),
-          likes: z.number().optional(),
-          views: z.number().optional(),
-          saves: z.number().optional(),
-          comments: z.number().optional(),
           user_id: z.string().optional(),
           postId: z.string().optional(),
         }),
@@ -32,8 +28,8 @@ const postRouter = router({
         import.meta.env.VITE_JWT_SECRET
       ) as { _id: string; jwtKey: string };
       try {
-        const user = await userModel.findById(_id, { _id: 0, jwtKey: 1 });
-        if (jwtKey !== user.jwtKey) {
+        const thisUser = await userModel.findById(_id, { _id: 0, jwtKey: 1 });
+        if (jwtKey !== thisUser.jwtKey) {
           return {
             msg: "Not a valid user",
             error: false,
@@ -42,7 +38,6 @@ const postRouter = router({
         const payload = input.payload;
         payload.user_id = _id;
         payload.postId = randomBytes(9).toString("base64");
-        console.log(payload);
         await postModel.create(payload);
         return {
           postId: payload.postId,
@@ -57,7 +52,7 @@ const postRouter = router({
   fetchPost: procedure.input(z.string()).query(async ({ input }) => {
     const post = await postModel
       .findOne({ postId: input })
-      .select("-_id -__v -user_id");
+      .select("-_id -__v");
     if (post.draft) return { msg: "Post not found", error: false };
     const user = await userModel.findById(post.user_id, {
       name: 1,
@@ -70,7 +65,6 @@ const postRouter = router({
       blocked: 1,
       _id: 0,
     });
-    if (user.blocked) return { msg: "Post not found", error: false };
     return { post, user, success: true, error: false };
   }),
 
@@ -82,12 +76,11 @@ const postRouter = router({
         import.meta.env.VITE_JWT_SECRET
       ) as { _id: string; jwtKey: string };
       try {
-        const { key } = await userModel.findById(_id, { _id: 0, jwtKey: 1 });
-        if (jwtKey !== key) {
+        const thisUser = await userModel.findById(_id, { _id: 0, jwtKey: 1 });
+        if (jwtKey !== thisUser.jwtKey) {
           return { msg: "Not a valid user", error: false };
         }
         const post = await postModel.findOne({ postId: input.postId });
-        if (post.draft) return { msg: "Post not found", error: false };
         if (post.user_id !== _id) {
           return { msg: "Not a valid user", error: false };
         }
@@ -101,6 +94,8 @@ const postRouter = router({
     .input(
       z.object({
         token: z.string(),
+        _id: z.string(),
+        user_id: z.string(),
         payload: z.object({
           draft: z.boolean().optional(),
           title: z.string(),
@@ -108,16 +103,25 @@ const postRouter = router({
           thumbnail: z.string().optional(),
           content: z.array(z.any()).optional(),
           catagories: z.array(z.string()).optional(),
-          likes: z.number().optional(),
-          views: z.number().optional(),
-          saves: z.number().optional(),
-          comments: z.number().optional(),
-          user_id: z.string().optional(),
-          postId: z.string(),
         }),
       })
     )
-    .query(async ({ input }) => {}),
+    .query(async ({ input }) => {
+      const { _id, jwtKey } = jwt.verify(
+        input.token,
+        import.meta.env.VITE_JWT_SECRET
+      ) as { _id: string; jwtKey: string };
+      try {
+        const thisUser = await userModel.findById(_id, { _id: 0, jwtKey: 1 });
+        if (jwtKey !== thisUser.jwtKey || input.user_id !== _id) {
+          return { msg: "Not a valid user", error: false };
+        }
+        await postModel.findByIdAndUpdate(input._id, { $set: input.payload });
+        return { success: true, error: true };
+      } catch (error) {
+        return { error };
+      }
+    }),
 
   deletePost: procedure
     .input(z.object({ token: z.string(), _id: z.string() }))
@@ -127,8 +131,9 @@ const postRouter = router({
         import.meta.env.VITE_JWT_SECRET
       ) as { _id: string; jwtKey: string };
       try {
-        const { key } = await userModel.findById(_id, { _id: 0, jwtKey: 1 });
-        if (jwtKey !== key) return { msg: "Not a valid user", error: false };
+        const thisUser = await userModel.findById(_id, { _id: 0, jwtKey: 1 });
+        if (jwtKey !== thisUser.jwtKey)
+          return { msg: "Not a valid user", error: false };
         await postModel.findByIdAndRemove(input._id);
         return { msg: "Deleted", success: true, error: false };
       } catch (error) {
