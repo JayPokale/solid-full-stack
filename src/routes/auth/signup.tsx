@@ -1,3 +1,4 @@
+import { createSignal } from "solid-js";
 import { Navigate, createRouteAction, useSearchParams } from "solid-start";
 import { Form } from "solid-start/data/Form";
 import { Input } from "~/components/Input/Input";
@@ -5,6 +6,7 @@ import { client } from "~/lib/trpc";
 import { setUser } from "~/utils/user";
 
 const auth = () => {
+  const [nevigate, setNevigate] = createSignal("");
   const [params] = useSearchParams();
   const verify = { ...params }.verify;
 
@@ -25,13 +27,15 @@ const auth = () => {
       setUser(user);
       localStorage.setItem("user", JSON.stringify(user));
       document.cookie = `token=${result.token}`;
+      setNevigate("/");
     }
   });
 
-  if(!verify) return <Navigate href={"/"}/>
+  if (!verify) return <Navigate href={"/"} />;
 
   return (
     <div class="h-[calc(100vh-3.5rem)] w-full grid place-items-center">
+      {nevigate() !== "" && <Navigate href={nevigate()} />}
       <div class="w-full h-72 max-w-md flex flex-col gap-4 px-2 py-4 border rounded-md">
         <Form
           class="flex flex-col justify-between gap-4 h-full px-4 pb-4"
@@ -41,7 +45,9 @@ const auth = () => {
             <h1 class="text-lg">Create Credentials</h1>
             <Input {...{ type: "text", label: "Name", name: "Name" }} />
             <Input {...{ type: "text", label: "Username", name: "Username" }} />
-            <Input {...{ type: "password", label: "Password", name: "Password" }} />
+            <Input
+              {...{ type: "password", label: "Password", name: "Password" }}
+            />
           </div>
           <div class="w-full flex flex-col gap-4 justify-end">
             <input

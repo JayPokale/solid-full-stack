@@ -151,7 +151,7 @@ const WritePost = () => {
     });
     formController.classList.remove("hidden");
     if (!res.success) return;
-    sessionStorage.removeItem(postId);
+    // sessionStorage.removeItem(postId);
     setNevigate(`/post/${postId}`);
   };
 
