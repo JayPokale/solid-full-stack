@@ -21,7 +21,7 @@ const EDITOR_JS_TOOLS = {
     class: Image,
     config: {
       uploader: {
-        uploadByFile(file) {
+        uploadByFile(file: any) {
           let formData = new FormData();
           formData.append("images", file);
           // send image to server

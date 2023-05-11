@@ -1,4 +1,4 @@
-import { createEffect, For, JSX } from "solid-js";
+import { createEffect, For } from "solid-js";
 import { A, createRouteData, useParams, useRouteData } from "solid-start";
 
 export function routeData() {

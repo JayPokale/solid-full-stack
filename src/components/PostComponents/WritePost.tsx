@@ -2,10 +2,10 @@ import { createSignal } from "solid-js";
 import EditorJS from "@editorjs/editorjs";
 import Header from "@editorjs/header";
 import List from "@editorjs/list";
-import CodeBox from "@bomdi/codebox";
+// import CodeBox from "@bomdi/codebox";
 import Image from "@editorjs/image";
-import Quote from "@editorjs/quote";
-import CheckList from "@editorjs/checklist";
+// import Quote from "@editorjs/quote";
+// import CheckList from "@editorjs/checklist";
 import Delimiter from "@editorjs/delimiter";
 import InlineCode from "@editorjs/inline-code";
 import "./Editor.css";
@@ -13,8 +13,14 @@ import { Navigate } from "solid-start";
 import uploadImage from "~/utils/uploadImage";
 import getCookie from "~/utils/getToken";
 import { client } from "~/lib/trpc";
+import { User } from "~/utils/user";
 
 const EditPost = () => {
+  if(!User().userId) {
+    alert("Login required")
+    return <Navigate href={"/"}/>
+  }
+  
   const [title, setTitle] = createSignal("");
   const [subtitle, setSubtitle] = createSignal("");
   const [thumbnail, setThumbnail] = createSignal("");

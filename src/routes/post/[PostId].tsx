@@ -1,5 +1,5 @@
 import { createEffect } from "solid-js";
-import { A, createRouteData, useParams, useRouteData } from "solid-start";
+import { createRouteData, useParams, useRouteData } from "solid-start";
 import { format } from "timeago.js";
 import "../../components/PostComponents/Editor.css";
 import { User } from "~/utils/user";

@@ -1,5 +1,5 @@
 // @refuserh reload
-import { createEffect, createSignal, Suspense } from "solid-js";
+import { createEffect, Suspense } from "solid-js";
 import {
   Body,
   ErrorBoundary,
@@ -21,7 +21,7 @@ export default function Root() {
   createEffect(async () => {
     const userString: any = localStorage.getItem("user");
     let user: user = emptyUser;
-    if (userString !== "undefined") {
+    if (userString && userString !== "undefined") {
       user = await JSON.parse(userString);
       setUser(user);
     }

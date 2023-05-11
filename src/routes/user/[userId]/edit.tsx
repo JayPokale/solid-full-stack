@@ -1,6 +1,6 @@
-import { createSignal } from "solid-js";
+import { createEffect, createSignal } from "solid-js";
 import { For } from "solid-js";
-import { createRouteAction } from "solid-start";
+import { Navigate, createRouteAction } from "solid-start";
 import { Form } from "solid-start/data/Form";
 import { Input } from "~/components/Input/Input";
 import { InputNonReq } from "~/components/Input/InputNonReq";
@@ -10,6 +10,13 @@ import uploadImage from "~/utils/uploadImage";
 import { User } from "~/utils/user";
 
 const edit = () => {
+  createEffect(() => {
+    if(!User().userId) {
+      alert("Login required")
+      return <Navigate href={"/"}/>
+    }
+  })
+
   const [profile, setProfile] = createSignal<string>();
   const [about, setAbout] = createSignal("");
 

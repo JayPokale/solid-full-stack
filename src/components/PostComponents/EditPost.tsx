@@ -15,6 +15,11 @@ import getCookie from "~/utils/getToken";
 import { client } from "~/lib/trpc";
 
 const WritePost = () => {
+  if(!User().userId) {
+    alert("Login required")
+    return <Navigate href={"/"}/>
+  }
+  
   const [title, setTitle] = createSignal("");
   const [subtitle, setSubtitle] = createSignal("");
   const [thumbnail, setThumbnail] = createSignal("");

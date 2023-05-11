@@ -1,15 +1,15 @@
 import { createSignal } from "solid-js";
 
 export interface user {
-  name: string | null;
-  username: string | null;
-  userId: string | null;
+  name: string;
+  username: string;
+  userId: string;
 }
 
 export const emptyUser = {
-  name: null,
-  username: null,
-  userId: null,
+  name: "",
+  username: "",
+  userId: "",
 };
 
 export const [User, setUser] = createSignal<user>(emptyUser);
