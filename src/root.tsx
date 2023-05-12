@@ -29,14 +29,14 @@ export default function Root() {
   createEffect(() => pageview(location.pathname));
 
   createEffect(async () => {
-    document.getElementById(
-      "google-analytics"
-    )!.outerHTML = `<script async id="google-analytics">
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){window.dataLayer.push(arguments)}
-    gtag('js', new Date());
-    gtag('config', 'G-0XLHW0KX3P');
-  </script>`;
+  //   document.getElementById(
+  //     "google-analytics"
+  //   )!.outerHTML = `<script async id="google-analytics">
+  //   window.dataLayer = window.dataLayer || [];
+  //   function gtag(){window.dataLayer.push(arguments)}
+  //   gtag('js', new Date());
+  //   gtag('config', 'G-0XLHW0KX3P');
+  // </script>`;
 
     const userString: any = localStorage.getItem("user");
     let user: user = emptyUser;
@@ -71,10 +71,11 @@ export default function Root() {
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         />
-        <script
+        {/* <script
+          async
           src="https://www.googletagmanager.com/gtag/js?id=G-0XLHW0KX3P"
         />
-        <script async id="google-analytics" />
+        <script async id="google-analytics" /> */}
       </Head>
       <Body>
         <ErrorBoundary>
