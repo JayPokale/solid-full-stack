@@ -68,6 +68,11 @@ export default function Root() {
           gtag('js', new Date()); gtag('config', 'G-0XLHW0KX3P');
           `}
         </script>
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4594992880793314"
+          crossorigin="anonymous"
+        />
       </Head>
       <Body>
         <ErrorBoundary>
