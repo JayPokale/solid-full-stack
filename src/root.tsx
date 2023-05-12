@@ -18,12 +18,6 @@ import getCookie from "./utils/getToken";
 import { emptyUser, setUser, user } from "./utils/user";
 import { useLocation } from "@solidjs/router";
 import { pageview } from "./utils/gtag";
-import { unstable_clientOnly } from "solid-start";
-
-declare const window: Window &
-  typeof globalThis & {
-    dataLayer: any;
-  };
 
 export default function Root() {
   const location = useLocation();
