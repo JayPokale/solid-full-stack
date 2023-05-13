@@ -57,7 +57,7 @@ export default function Root() {
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         />
-        <script
+        {/* <script
           defer
           src="https://www.googletagmanager.com/gtag/js?id=G-0XLHW0KX3P"
         />
@@ -73,7 +73,7 @@ export default function Root() {
           defer
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4594992880793314"
           crossorigin="anonymous"
-        />
+        /> */}
       </Head>
       <Body>
         <ErrorBoundary>
