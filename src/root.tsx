@@ -21,7 +21,7 @@ import { pageview } from "./utils/gtag";
 
 export default function Root() {
   const location = useLocation();
-  createEffect(() => location.pathname);
+  createEffect(() => pageview(location.pathname));
 
   createEffect(async () => {
     const userString: any = localStorage.getItem("user");
@@ -57,11 +57,11 @@ export default function Root() {
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         />
-        {/* <script
+        <script
           defer
           src="https://www.googletagmanager.com/gtag/js?id=G-0XLHW0KX3P"
         />
-        <script>
+        {/* <script>
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
