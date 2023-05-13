@@ -61,6 +61,11 @@ export default function Root() {
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-0XLHW0KX3P"
         />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4594992880793314"
+          crossorigin="anonymous"
+        />
         <script async id="google-analytics">
           {`
             window.dataLayer = window.dataLayer || [];
@@ -69,11 +74,6 @@ export default function Root() {
             gtag('config', 'G-0XLHW0KX3P');
           `}
         </script>
-        {/* <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4594992880793314"
-          crossorigin="anonymous"
-        /> */}
       </Head>
       <Body>
         <ErrorBoundary>
