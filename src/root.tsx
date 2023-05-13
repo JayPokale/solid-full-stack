@@ -58,22 +58,22 @@ export default function Root() {
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         />
         {/* <script
-          defer
+          async
           src="https://www.googletagmanager.com/gtag/js?id=G-0XLHW0KX3P"
         />
-        <script defer id="google-analytics">
+        <script async id="google-analytics">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', 'G-0XLHW0KX3P');
           `}
-        </script>
+        </script> */}
         <script
-          defer
+          async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4594992880793314"
           crossorigin="anonymous"
-        /> */}
+        />
       </Head>
       <Body>
         <ErrorBoundary>
