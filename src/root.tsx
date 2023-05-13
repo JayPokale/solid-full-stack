@@ -21,7 +21,7 @@ import { pageview } from "./utils/gtag";
 
 export default function Root() {
   const location = useLocation();
-  // createEffect(() => pageview(location.pathname));
+  createEffect(() => location);
 
   createEffect(async () => {
     const userString: any = localStorage.getItem("user");
