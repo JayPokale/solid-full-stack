@@ -58,7 +58,7 @@ export default function Root() {
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         />
         <script
-          async
+          defer
           src="https://www.googletagmanager.com/gtag/js?id=G-0XLHW0KX3P"
         />
         <script>
@@ -70,7 +70,7 @@ export default function Root() {
           `}
         </script>
         <script
-          async
+          defer
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4594992880793314"
           crossorigin="anonymous"
         />
