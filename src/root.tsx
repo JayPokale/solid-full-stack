@@ -74,6 +74,11 @@ export default function Root() {
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4594992880793314"
           crossorigin="anonymous"
         />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4594992880793314"
+          crossorigin="anonymous"
+        />
       </Head>
       <Body>
         <ErrorBoundary>
