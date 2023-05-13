@@ -20,8 +20,8 @@ import { useLocation } from "@solidjs/router";
 import { pageview } from "./utils/gtag";
 
 export default function Root() {
-  // const location = useLocation();
-  // createEffect(() => pageview(location.pathname));
+  const location = useLocation();
+  createEffect(() => pageview(location.pathname));
 
   createEffect(async () => {
     const userString: any = localStorage.getItem("user");
