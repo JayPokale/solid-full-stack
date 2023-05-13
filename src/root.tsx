@@ -66,14 +66,14 @@ export default function Root() {
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4594992880793314"
           crossorigin="anonymous"
         />
-        <script async id="google-analytics">
+        {/* <script async id="google-analytics">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', 'G-0XLHW0KX3P');
           `}
-        </script>
+        </script> */}
       </Head>
       <Body>
         <ErrorBoundary>
