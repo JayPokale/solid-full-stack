@@ -60,12 +60,13 @@ export default function Root() {
         <script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-0XLHW0KX3P"
-        />
+        ></script>
         <script async id="google-analytics">
           {`
-          window.dataLayer = window.dataLayer || []; function gtag()
-          {window.dataLayer.push(arguments)}
-          gtag('js', new Date()); gtag('config', 'G-0XLHW0KX3P');
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-0XLHW0KX3P');
           `}
         </script>
         <script
