@@ -19,9 +19,23 @@ import { emptyUser, setUser, user } from "./utils/user";
 import { useLocation } from "@solidjs/router";
 import { pageview } from "./utils/gtag";
 
+declare const window: Window &
+  typeof globalThis & {
+    dataLayer: any;
+  };
+
 export default function Root() {
   const location = useLocation();
   createEffect(() => pageview(location.pathname));
+
+  // createEffect(() => {
+  //   window.dataLayer = window.dataLayer || [];
+  //   function gtag() {
+  //     dataLayer.push(arguments);
+  //   }
+  //   gtag("js", new Date());
+  //   gtag("config", "G-0XLHW0KX3P");
+  // });
 
   createEffect(async () => {
     const userString: any = localStorage.getItem("user");
