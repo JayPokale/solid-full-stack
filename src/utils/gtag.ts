@@ -6,11 +6,9 @@ declare const window: Window &
   };
 
 export const pageview = (url: string) => {
-  if (window?.gtag) {
-    window.gtag("config", GA_TRACKING_ID, {
-      page_path: url,
-    });
-  }
+  window.gtag("config", GA_TRACKING_ID, {
+    page_path: url,
+  });
 };
 
 export const event = ({ action, category, label, value }: any) => {

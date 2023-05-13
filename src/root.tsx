@@ -16,8 +16,8 @@ import "./root.css";
 import { client } from "./lib/trpc";
 import getCookie from "./utils/getToken";
 import { emptyUser, setUser, user } from "./utils/user";
-import { useLocation } from "@solidjs/router";
 import { pageview } from "./utils/gtag";
+import { useLocation } from "@solidjs/router";
 
 declare const window: Window &
   typeof globalThis & {
@@ -28,14 +28,6 @@ export default function Root() {
   const location = useLocation();
   createEffect(() => pageview(location.pathname));
 
-  // createEffect(() => {
-  //   window.dataLayer = window.dataLayer || [];
-  //   function gtag() {
-  //     dataLayer.push(arguments);
-  //   }
-  //   gtag("js", new Date());
-  //   gtag("config", "G-0XLHW0KX3P");
-  // });
 
   createEffect(async () => {
     const userString: any = localStorage.getItem("user");
@@ -75,14 +67,14 @@ export default function Root() {
           defer
           src="https://www.googletagmanager.com/gtag/js?id=G-0XLHW0KX3P"
         />
-        {/* <script>
+        <script>
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', 'G-0XLHW0KX3P');
           `}
-        </script> */}
+        </script>
         <script
           defer
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4594992880793314"
