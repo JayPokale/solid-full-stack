@@ -60,7 +60,7 @@ export default function Root() {
         <script
           defer
           src="https://www.googletagmanager.com/gtag/js?id=G-0XLHW0KX3P"
-        ></script>
+        />
         <script defer id="google-analytics">
           {`
             window.dataLayer = window.dataLayer || [];
