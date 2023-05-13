@@ -16,13 +16,8 @@ import "./root.css";
 import { client } from "./lib/trpc";
 import getCookie from "./utils/getToken";
 import { emptyUser, setUser, user } from "./utils/user";
-// import { useLocation } from "@solidjs/router";
-// import { pageview } from "./utils/gtag";
 
 export default function Root() {
-  // const location = useLocation();
-  // createEffect(() => pageview(location.pathname));
-
   createEffect(async () => {
     const userString: any = localStorage.getItem("user");
     let user: user = emptyUser;
@@ -57,18 +52,6 @@ export default function Root() {
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         />
-        {/* <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-0XLHW0KX3P"
-        />
-        <script async id="google-analytics">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-0XLHW0KX3P');
-          `}
-        </script> */}
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4594992880793314"
