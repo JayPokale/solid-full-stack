@@ -29,12 +29,10 @@ export default function Root() {
     if (userString && userString !== "undefined") {
       user = await JSON.parse(userString);
       setUser(user);
-      console.log(user);
     }
     const token = getCookie("token");
     if (!user.userId && token?.length) {
       const result: any = client.user.thisUser.query(token);
-      console.log(result);
       if (result.success) {
         const user = {
           name: result.name,
