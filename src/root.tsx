@@ -19,11 +19,6 @@ import { emptyUser, setUser, user } from "./utils/user";
 import { pageview } from "./utils/gtag";
 import { useLocation } from "@solidjs/router";
 
-declare const window: Window &
-  typeof globalThis & {
-    dataLayer: any;
-  };
-
 export default function Root() {
   const location = useLocation();
   createEffect(() => pageview(location.pathname));
@@ -34,6 +29,7 @@ export default function Root() {
     if (userString && userString !== "undefined") {
       user = await JSON.parse(userString);
       setUser(user);
+      console.log(user);
     }
     const token = getCookie("token");
     if (!user.userId && token?.length) {
@@ -47,7 +43,6 @@ export default function Root() {
         };
         setUser(user);
         localStorage.setItem("user", JSON.stringify(user));
-        document.cookie = `token=${result.token}`;
       }
     }
   });

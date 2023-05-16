@@ -4,6 +4,7 @@ const getCookie = (key: string) => {
     if (item.startsWith(`${key}=`)) {
       return item.substring(key.length + 1);
     }
+    return undefined;
   }
 };
 

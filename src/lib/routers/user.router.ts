@@ -30,8 +30,8 @@ const userRouter = router({
           }
         ).email;
         password = bcrypt.hashSync(password, 8);
-        const userId = randomBytes(6).toString("base64");
-        const jwtKey = randomBytes(3).toString("base64");
+        const userId = randomBytes(6).toString("base64").replaceAll("/","_").replaceAll("+","-");
+        const jwtKey = randomBytes(3).toString("base64").replaceAll("/","_").replaceAll("+","-");
         const user = await userModel.create({
           name,
           username,
@@ -206,32 +206,15 @@ const userRouter = router({
     }),
 
   fetchUser: procedure
-    .input(z.object({ token: z.string().optional(), idToFetch: z.string() }))
+    .input(z.object({ idToFetch: z.string() }))
     .query(async ({ input }) => {
-      const { _id, jwtKey } = !input.token
-        ? { _id: null, jwtKey: null }
-        : (jwt.verify(input.token, import.meta.env.VITE_JWT_SECRET) as {
-            _id: string;
-            jwtKey: string;
-          });
       try {
-        const user = await userModel.findById(_id, {
-          userId: 1,
-          jwtKey: 1,
-          _id: 0,
-        });
-
-        if (user.userId === input.idToFetch && user.jwtKey === jwtKey) {
-          return await userModel
-            .findById(_id)
-            .select("-password -__v -createdAt -updatedAt");
-        } else {
-          return await userModel
-            .findOne({ userId: input.idToFetch })
-            .select(
-              "-password -__v -createdAt -updatedAt -drafts -liked -viewed -saved -commented -followed"
-            );
-        }
+        const user = await userModel
+          .findOne({ userId: input.idToFetch })
+          .select(
+            "-password -__v -createdAt -updatedAt -drafts -liked -viewed -saved -commented -followed -jwtKey"
+          );
+        return { user, success: true, error: false };
       } catch (error) {
         console.log(error);
         return { error };
@@ -247,7 +230,7 @@ const userRouter = router({
       const user = await userModel.findById(_id, { _id: 1, jwtKey: 1 });
       if (user?.jwtKey === jwtKey) {
         await userModel.findByIdAndUpdate(_id, {
-          $set: { jwtKey: randomBytes(3).toString("base64") },
+          $set: { jwtKey: randomBytes(3).toString("base64").replaceAll("/","_").replaceAll("+","-") },
         });
       } else {
         return {

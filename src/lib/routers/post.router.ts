@@ -11,7 +11,6 @@ const postRouter = router({
       z.object({
         token: z.string(),
         payload: z.object({
-          draft: z.boolean().optional(),
           title: z.string(),
           subtitle: z.string(),
           thumbnail: z.string().optional(),
@@ -19,6 +18,7 @@ const postRouter = router({
           catagories: z.array(z.string()).optional(),
           user_id: z.string().optional(),
           postId: z.string().optional(),
+          draft: z.boolean().optional(),
         }),
       })
     )
@@ -37,7 +37,7 @@ const postRouter = router({
         }
         const payload = input.payload;
         payload.user_id = _id;
-        payload.postId = randomBytes(9).toString("base64");
+        payload.postId = randomBytes(9).toString("base64").replaceAll("/","_").replaceAll("+","-");
         await postModel.create(payload);
         return {
           postId: payload.postId,
@@ -51,20 +51,28 @@ const postRouter = router({
     }),
 
   fetchPost: procedure.input(z.string()).query(async ({ input }) => {
-    const post = await postModel.findOne({ postId: input }).select("-_id -__v");
-    if (post.draft) return { msg: "Post not found", error: false };
-    const user = await userModel.findById(post.user_id, {
-      name: 1,
-      username: 1,
-      userId: 1,
-      bio: 1,
-      location: 1,
-      profilePhoto: 1,
-      followers: 1,
-      blocked: 1,
-      _id: 0,
-    });
-    return { post, user, success: true, error: false };
+    try {
+      const post = await postModel
+        .findOne({ postId: input })
+        .select("-_id -__v");
+      console.log(post);
+      if (post.draft) return { msg: "Post not found", error: false };
+      const user = await userModel.findById(post.user_id, {
+        name: 1,
+        username: 1,
+        userId: 1,
+        bio: 1,
+        location: 1,
+        profilePhoto: 1,
+        followers: 1,
+        blocked: 1,
+        _id: 0,
+      });
+      return { post, user, success: true, error: false };
+    } catch (error) {
+      console.log(error);
+      return { error };
+    }
   }),
 
   fetchPostForEdit: procedure

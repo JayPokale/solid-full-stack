@@ -1,28 +1,16 @@
 import { createEffect, For } from "solid-js";
 import { A, createRouteData, useParams, useRouteData } from "solid-start";
+import { client } from "~/lib/trpc";
 
 export function routeData() {
   return createRouteData(async () => {
     const params = useParams();
     const userId = params.userId;
-    let user: any;
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/users/user/${userId}`,
-        {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          method: "GET",
-        }
-      );
-      user = await response.json();
-    } catch {
-      user = { error: "An error occured" };
-    }
+    const data: any = await client.user.fetchUser.query({ idToFetch: userId });
+    const user = data.user
+    console.log(user)
     let html = null;
-    if (user.error) {
+    if (!data.success) {
       html = (
         <div class="max-w-screen-2xl mx-auto flex justify-center">
           <div class="p-12 text-2xl text-gray-400 font-semibold italic grid place-items-center gap-4">
@@ -65,23 +53,23 @@ export function routeData() {
                     <p class="max-w-[176px] text-sm text-gray-600">
                       {user.username}
                     </p>
-                    {/* <div class="max-w-[176px] flex items-baseline gap-1">
+                    <div class="max-w-[176px] flex items-baseline gap-1">
                       <p class="text-xl text-black font-semibold">
                         {user.followers}
                       </p>
                       <p class="text-sm text-gray-600 font-medium">Followers</p>
-                    </div> */}
+                    </div>
                     <p class="max-w-[176px] text-sm text-gray-600">
                       From: <span class="text-black">{user.location}</span>
                     </p>
                   </div>
                 </div>
-                {/* <div class="py-4">
+                <div class="py-4">
                   <button class="w-full py-1 rounded-md text-green-600 bg-green-100">
                     Follow
                   </button>
-                </div> */}
-                {user.socialLinks.length ? (
+                </div>
+                {user.socialLinks?.length ? (
                   <div class="relative flex flex-col items-center">
                     <div>
                       <p class="text-center text-gray-400">

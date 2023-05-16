@@ -26,6 +26,7 @@ const userSchema = new mongoose.Schema(
     saves: { type: Number, default: 0 },
     comments: { type: Number, default: 0 },
     followers: { type: Number, default: 0 },
+    countPosts: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

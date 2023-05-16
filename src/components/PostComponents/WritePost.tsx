@@ -16,11 +16,11 @@ import { client } from "~/lib/trpc";
 import { User } from "~/utils/user";
 
 const EditPost = () => {
-  if(!User().userId) {
-    alert("Login required")
-    return <Navigate href={"/"}/>
+  if (!User().userId) {
+    alert("Login required");
+    return <Navigate href={"/"} />;
   }
-  
+
   const [title, setTitle] = createSignal("");
   const [subtitle, setSubtitle] = createSignal("");
   const [thumbnail, setThumbnail] = createSignal("");
