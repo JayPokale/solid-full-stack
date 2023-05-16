@@ -28,7 +28,6 @@ export default function Root() {
   const location = useLocation();
   createEffect(() => pageview(location.pathname));
 
-
   createEffect(async () => {
     const userString: any = localStorage.getItem("user");
     let user: user = emptyUser;

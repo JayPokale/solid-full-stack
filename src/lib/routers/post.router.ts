@@ -45,14 +45,13 @@ const postRouter = router({
           error: false,
         };
       } catch (error) {
+        console.log(error);
         return { error };
       }
     }),
 
   fetchPost: procedure.input(z.string()).query(async ({ input }) => {
-    const post = await postModel
-      .findOne({ postId: input })
-      .select("-_id -__v");
+    const post = await postModel.findOne({ postId: input }).select("-_id -__v");
     if (post.draft) return { msg: "Post not found", error: false };
     const user = await userModel.findById(post.user_id, {
       name: 1,
@@ -86,6 +85,7 @@ const postRouter = router({
         }
         return { post, success: true, error: false };
       } catch (error) {
+        console.log(error);
         return { error };
       }
     }),
@@ -119,6 +119,7 @@ const postRouter = router({
         await postModel.findByIdAndUpdate(input._id, { $set: input.payload });
         return { success: true, error: true };
       } catch (error) {
+        console.log(error);
         return { error };
       }
     }),
@@ -137,6 +138,7 @@ const postRouter = router({
         await postModel.findByIdAndRemove(input._id);
         return { msg: "Deleted", success: true, error: false };
       } catch (error) {
+        console.log(error);
         return { error };
       }
     }),

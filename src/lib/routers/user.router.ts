@@ -24,23 +24,21 @@ const userRouter = router({
         if (await userModel.exists({ username })) {
           return { msg: "Username Exist", error: false };
         }
-      } catch (error) {
-        console.log(error);
-      }
-      try {
         email = (
           jwt.verify(email, import.meta.env.VITE_JWT_SECRET) as {
             email: string;
           }
         ).email;
         password = bcrypt.hashSync(password, 8);
+        const userId = randomBytes(6).toString("base64");
+        const jwtKey = randomBytes(3).toString("base64");
         const user = await userModel.create({
           name,
           username,
           password,
           email,
-          userId: randomBytes(6).toString("base64"),
-          jwtKey: randomBytes(3).toString("base64"),
+          userId,
+          jwtKey,
         });
         return {
           name: user.name,
@@ -54,6 +52,7 @@ const userRouter = router({
           error: false,
         };
       } catch (error) {
+        console.log(error);
         return { error };
       }
     }),
@@ -90,6 +89,7 @@ const userRouter = router({
           error: true,
         };
       } catch (error) {
+        console.log(error);
         return { error };
       }
     }),
@@ -123,6 +123,7 @@ const userRouter = router({
         error: false,
       };
     } catch (error) {
+      console.log(error);
       return { error };
     }
   }),
@@ -136,6 +137,7 @@ const userRouter = router({
         }
       } catch (error) {
         console.log(error);
+        return { error };
       }
       const verify = jwt.sign(
         { email: input },
@@ -231,6 +233,7 @@ const userRouter = router({
             );
         }
       } catch (error) {
+        console.log(error);
         return { error };
       }
     }),
@@ -253,6 +256,7 @@ const userRouter = router({
         };
       }
     } catch (error) {
+      console.log(error);
       return { error };
     }
   }),
