@@ -4,8 +4,8 @@ const Footer = () => {
   return (
     <footer class="lg:text-left mt-14 text-gray-600">
       <div class="flex justify-center items-center lg:justify-between p-6 border-y border-gray-300">
-        <div class="mr-12 hidden lg:block">
-          <span>Get connected with us on social networks:</span>
+        <div class="mr-12">
+          <span>Get connected with us:</span>
         </div>
         <div class="flex justify-center">
           <a
@@ -43,22 +43,6 @@ const Footer = () => {
               ></path>
             </svg>
           </a>
-          {/* <a href="mailto:dare2solve@gmail.com" class="mr-6 text-gray-600">
-            <svg
-              aria-hidden="true"
-              data-prefix="fab"
-              data-icon="google"
-              class="w-3.5"
-              role="img"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 488 512"
-            >
-              <path
-                fill="currentColor"
-                d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
-              ></path>
-            </svg>
-          </a> */}
           <a
             href="https://www.instagram.com/dare2solve/"
             class="mr-6 text-gray-600"
@@ -170,7 +154,7 @@ const Footer = () => {
               </svg>
               dare2solve@gmail.com
             </h6>
-            <div class="flex">
+            <div class="flex justify-center md:justify-start">
               <a
                 href="https://www.facebook.com/DareAndSolve"
                 class="mr-6 text-gray-600"
@@ -250,10 +234,7 @@ const Footer = () => {
       </div>
       <div class="text-center p-6 bg-gray-100">
         <span>© 2023 Copyright:</span>
-        <a class="text-gray-600 font-semibold" href="">
-          {" "}
-          AuthorsLog
-        </a>
+        <span class="text-gray-600 font-semibold">AuthorsLog</span>
       </div>
     </footer>
   );
