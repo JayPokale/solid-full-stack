@@ -67,11 +67,12 @@ const HomePage = () => {
         </div>
       </div>
       <h1 class="max-w-6xl text-center text-lg text-gray-600">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate
-        placeat id consequuntur mollitia adipisci accusamus officiis maiores
-        recusandae fugiat! Pariatur quas, illum nostrum modi doloremque dolore
-        sapiente eligendi sit perferendis. Voluptatibus voluptas quibusdam nihil
-        autem!
+        Our goal is to provide an modern way of blogging where people will write
+        there articles on will be published on Search Engines. We are going to
+        simplify bloging journey for new blogger. We provide a faster website,
+        server side rendering, automation of your content hosting. We used
+        modern generation web technologies to increse your Google ranking and
+        provide significantly higher earning.
       </h1>
       <div class="flex gap-8 flex-col sm:flex-row">
         <A href="/post/write">
