@@ -93,7 +93,7 @@ const HomePage = () => {
       </div>
 
       {/* Trending Categories */}
-      <div class="flex flex-wrap gap-2 sm:gap-8 justify-center w-full">
+      {/* <div class="flex flex-wrap gap-2 sm:gap-8 justify-center w-full">
         <button
           class="w-[calc(50%-4px)] sm:w-52 aspect-[4/3] rounded-xl duration-300 hover:bg-black/[0.015]"
           style={{
@@ -130,7 +130,7 @@ const HomePage = () => {
         >
           Container 4
         </button>
-      </div>
+      </div> */}
     </main>
   );
 };

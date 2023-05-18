@@ -37,8 +37,21 @@ const postRouter = router({
         }
         const payload = input.payload;
         payload.user_id = _id;
-        payload.postId = randomBytes(9).toString("base64").replaceAll("/","_").replaceAll("+","-");
-        await postModel.create(payload);
+        payload.postId = randomBytes(9)
+          .toString("base64")
+          .replaceAll("/", "_")
+          .replaceAll("+", "-");
+        const post = await postModel.create(payload);
+        if (input.payload.draft) {
+          await userModel.findByIdAndUpdate(_id, {
+            $push: { drafts: post._id },
+          });
+        } else {
+          await userModel.findByIdAndUpdate(_id, {
+            $push: { posts: post._id },
+            $inc: { countPosts: 1 },
+          });
+        }
         return {
           postId: payload.postId,
           success: true,
@@ -124,7 +137,26 @@ const postRouter = router({
         if (jwtKey !== thisUser.jwtKey || input.user_id !== _id) {
           return { msg: "Not a valid user", error: false };
         }
-        await postModel.findByIdAndUpdate(input._id, { $set: input.payload });
+        const post = await postModel.findById(input._id, { draft: 1 });
+        await postModel.findByIdAndUpdate(input._id, {
+          $set: input.payload,
+        });
+        const wasDraft = post.draft;
+        const isDraft = input.payload.draft;
+        console.log(wasDraft, isDraft);
+        if (!wasDraft && isDraft) {
+          await userModel.findByIdAndUpdate(_id, {
+            $pull: { posts: post._id },
+            $push: { drafts: post._id },
+            $inc: { countPosts: -1 },
+          });
+        } else if (wasDraft && !isDraft) {
+          await userModel.findByIdAndUpdate(_id, {
+            $push: { posts: post._id },
+            $pull: { drafts: post._id },
+            $inc: { countPosts: 1 },
+          });
+        }
         return { success: true, error: true };
       } catch (error) {
         console.log(error);
@@ -141,9 +173,25 @@ const postRouter = router({
       ) as { _id: string; jwtKey: string };
       try {
         const thisUser = await userModel.findById(_id, { _id: 0, jwtKey: 1 });
-        if (jwtKey !== thisUser.jwtKey)
+        if (jwtKey !== thisUser.jwtKey) {
           return { msg: "Not a valid user", error: false };
+        }
+
+        const post = await postModel.findById(input._id, { draft: 1 });
+        const wasDraft = post.draft;
+
         await postModel.findByIdAndRemove(input._id);
+
+        if (wasDraft) {
+          await userModel.findByIdAndUpdate(_id, {
+            $pull: { drafts: post._id },
+          });
+        } else {
+          await userModel.findByIdAndUpdate(_id, {
+            $pull: { posts: post._id },
+            $inc: { countPosts: -1 },
+          });
+        }
         return { msg: "Deleted", success: true, error: false };
       } catch (error) {
         console.log(error);
