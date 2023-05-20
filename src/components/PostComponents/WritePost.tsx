@@ -11,7 +11,7 @@ import InlineCode from "@editorjs/inline-code";
 import "./Editor.css";
 import { Navigate } from "solid-start";
 import uploadImage from "~/utils/uploadImage";
-import getCookie from "~/utils/getToken";
+import getFromLocalStorage from "~/utils/localStorageItem";
 import { client } from "~/lib/trpc";
 import { User } from "~/utils/user";
 
@@ -74,7 +74,7 @@ const EditPost = () => {
     const formController: any = document.getElementById("formController");
     formController.classList.add("hidden");
     const data = await editor.save();
-    const token = getCookie("token");
+    const token = getFromLocalStorage("token");
     if (!token) return alert("Login Required");
     const result: any = await client.post.createPost.query({
       token,
@@ -97,7 +97,7 @@ const EditPost = () => {
     const formController: any = document.getElementById("formController");
     formController.classList.add("hidden");
     const data = await editor.save();
-    const token = getCookie("token");
+    const token = getFromLocalStorage("token");
     if (!token) return alert("Login Required");
     const result: any = await client.post.createPost.query({
       token,

@@ -5,7 +5,7 @@ import { Form } from "solid-start/data/Form";
 import { Input } from "~/components/Input/Input";
 import { InputNonReq } from "~/components/Input/InputNonReq";
 import { client } from "~/lib/trpc";
-import getCookie from "~/utils/getToken";
+import getFromLocalStorage from "~/utils/localStorageItem";
 import uploadImage from "~/utils/uploadImage";
 import { User } from "~/utils/user";
 
@@ -31,7 +31,7 @@ const edit = () => {
 
   const [updateUserProgress, updateUserData] = createRouteAction(
     async (formData: any) => {
-      const token = getCookie("token");
+      const token = getFromLocalStorage("token");
       if (User().userId && token) {
         const query = {
           name: formData.Name.value,

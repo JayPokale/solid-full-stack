@@ -11,7 +11,7 @@ import InlineCode from "@editorjs/inline-code";
 import "./Editor.css";
 import { Navigate, useParams } from "solid-start";
 import { User } from "~/utils/user";
-import getCookie from "~/utils/getToken";
+import getFromLocalStorage from "~/utils/localStorageItem";
 import { client } from "~/lib/trpc";
 
 const WritePost = () => {
@@ -31,7 +31,7 @@ const WritePost = () => {
   let result: any;
 
   const fetchEditPost = async () => {
-    const token = getCookie("token");
+    const token = getFromLocalStorage("token");
     if (!token) return alert("Login Required");
     result = await client.post.fetchPostForEdit.query({ token, postId });
     setTitle(result.post.title);
@@ -111,7 +111,7 @@ const WritePost = () => {
   const handleDelete = async () => {
     const formController: any = document.getElementById("formController");
     formController.classList.add("hidden");
-    const token = getCookie("token");
+    const token = getFromLocalStorage("token");
     if (!token) return alert("Login Required");
     const res = await client.post.deletePost.query({
       token,
@@ -140,7 +140,7 @@ const WritePost = () => {
     const formController: any = document.getElementById("formController");
     formController.classList.add("hidden");
     const data = await editor.save();
-    const token = getCookie("token");
+    const token = getFromLocalStorage("token");
     if (!token) return alert("Login Required");
     const res: any = await client.post.updatePost.query({
       token,
@@ -165,7 +165,7 @@ const WritePost = () => {
     if (!subtitle()) return alert("Subtitle is required");
     const formController: any = document.getElementById("formController");
     formController.classList.add("hidden");
-    const token = getCookie("token");
+    const token = getFromLocalStorage("token");
     if (!token) return alert("Login Required");
     const data = await editor.save();
     const res: any = await client.post.updatePost.query({

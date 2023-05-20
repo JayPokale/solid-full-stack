@@ -14,7 +14,7 @@ import {
 import Nav from "./components/Nav";
 import "./root.css";
 import { client } from "./lib/trpc";
-import getCookie from "./utils/getToken";
+import getFromLocalStorage from "./utils/localStorageItem";
 import { emptyUser, setUser, user } from "./utils/user";
 import { pageview } from "./utils/gtag";
 import { useLocation } from "@solidjs/router";
@@ -30,7 +30,7 @@ export default function Root() {
       user = await JSON.parse(userString);
       setUser(user);
     }
-    const token = getCookie("token");
+    const token = getFromLocalStorage("token");
     if (!user.userId && token?.length) {
       const result: any = client.user.thisUser.query(token);
       if (result.success) {

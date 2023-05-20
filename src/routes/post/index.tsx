@@ -1,5 +1,7 @@
 // Page to be deleted
 
+import { useLocation } from "@solidjs/router";
+import { createEffect } from "solid-js";
 import { useSearchParams } from "solid-start";
 import ArticleAside from "~/components/Article/ArticleAside";
 import ArticleMain from "~/components/Article/ArticleMain";

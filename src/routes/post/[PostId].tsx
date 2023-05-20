@@ -4,6 +4,7 @@ import { format } from "timeago.js";
 import "../../components/PostComponents/Editor.css";
 import { User } from "~/utils/user";
 import { client } from "~/lib/trpc";
+import { useLocation } from "@solidjs/router";
 
 const convertDataToHtml = (blocks: [Object]) => {
   var convertedHtml = "";

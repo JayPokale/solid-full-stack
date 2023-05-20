@@ -26,7 +26,8 @@ const auth = () => {
       };
       setUser(user);
       localStorage.setItem("user", JSON.stringify(user));
-      document.cookie = `token=${result.token}`;
+      // document.cookie = `token=${result.token}`;
+      localStorage.setItem("token", result.token);
       setNevigate("/");
     }
   });
